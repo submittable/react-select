@@ -117,6 +117,14 @@ describe('Async', () => {
 			typeSearchText('a');
 			return expect(loadOptions, 'was called times', 1);
 		});
+
+		it('should not use the same cache for every instance by default', () => {
+			createControl();
+			const instance1 = asyncInstance;
+			createControl();
+			const instance2 = asyncInstance;
+			expect(instance1._cache !== instance2._cache, 'to equal', true);
+		});
 	});
 
 	describe('loadOptions', () => {
@@ -330,6 +338,67 @@ describe('Async', () => {
 			});
 			typeSearchText('WÄRE');
 			expect(loadOptions, 'was called with', 'ware');
+		});
+	});
+
+	describe('noResultsText', () => {
+
+		beforeEach(() => {
+			createControl({
+				searchPromptText: 'searchPromptText',
+				loadingPlaceholder: 'loadingPlaceholder',
+				noResultsText: 'noResultsText',
+			});
+		});
+
+		describe('before the user inputs text', () => {
+			it('returns the searchPromptText', () => {
+				expect(asyncInstance.noResultsText(), 'to equal', 'searchPromptText');
+			});
+		});
+
+		describe('while results are loading', () => {
+			beforeEach((cb) => {
+				asyncInstance.setState({
+					isLoading: true,
+				}, cb);
+			});
+			it('returns the loading indicator', () => {
+				asyncInstance.select = { state: { inputValue: 'asdf' } };
+				expect(asyncInstance.noResultsText(), 'to equal', 'loadingPlaceholder');
+			});
+		});
+
+		describe('after an empty result set loads', () => {
+			beforeEach((cb) => {
+				asyncInstance.setState({
+					isLoading: false,
+				}, cb);
+			});
+
+			describe('if noResultsText has been provided', () => {
+				it('returns the noResultsText', () => {
+					asyncInstance.select = { state: { inputValue: 'asdf' } };
+					expect(asyncInstance.noResultsText(), 'to equal', 'noResultsText');
+				});
+			});
+
+			describe('if noResultsText is empty', () => {
+				beforeEach((cb) => {
+					createControl({
+						searchPromptText: 'searchPromptText',
+						loadingPlaceholder: 'loadingPlaceholder'
+					});
+					asyncInstance.setState({
+						isLoading: false,
+						inputValue: 'asdfkljhadsf'
+					}, cb);
+				});
+				it('falls back to searchPromptText', () => {
+					asyncInstance.select = { state: { inputValue: 'asdf' } };
+					expect(asyncInstance.noResultsText(), 'to equal', 'searchPromptText');
+				});
+			});
 		});
 	});
 

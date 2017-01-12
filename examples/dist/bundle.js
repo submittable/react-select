@@ -2093,7 +2093,7 @@ var Select = _react2['default'].createClass({
 		if (this.props.multi && !this.props.disabled && valueArray.length && !this.state.inputValue && this.state.isFocused && this.props.backspaceRemoves) {
 			removeMessage = _react2['default'].createElement(
 				'span',
-				{ id: this._instancePrefix + '-backspace-remove-message', className: 'Select-aria-only', 'aria-live': 'assertive' },
+				{ id: this._instancePrefix + '-backspace-remove-message', className: 'Select-aria-only Select-remove-message', 'aria-live': 'assertive' },
 				this.props.backspaceToRemoveMessage.replace('{label}', valueArray[valueArray.length - 1][this.props.labelKey])
 			);
 		}
@@ -2122,9 +2122,9 @@ var Select = _react2['default'].createClass({
 				_react2['default'].createElement(
 					'span',
 					{ className: 'Select-multi-value-wrapper', id: this._instancePrefix + '-value' },
-					this.renderValue(valueArray, isOpen),
-					this.renderInput(valueArray, focusedOptionIndex)
+					this.renderValue(valueArray, isOpen)
 				),
+				this.renderInput(valueArray, focusedOptionIndex),
 				removeMessage,
 				this.renderLoading(),
 				this.renderClear(),

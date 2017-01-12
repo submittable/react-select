@@ -1067,7 +1067,7 @@ const Select = React.createClass({
 			this.state.isFocused &&
 			this.props.backspaceRemoves) {
 			removeMessage = (
-				<span id={this._instancePrefix + '-backspace-remove-message'} className="Select-aria-only" aria-live="assertive">
+				<span id={this._instancePrefix + '-backspace-remove-message'} className="Select-aria-only Select-remove-message" aria-live="assertive">
 					{this.props.backspaceToRemoveMessage.replace('{label}', valueArray[valueArray.length - 1][this.props.labelKey])}
 				</span>
 			);
@@ -1089,8 +1089,8 @@ const Select = React.createClass({
 				>
 					<span className="Select-multi-value-wrapper" id={this._instancePrefix + '-value'}>
 						{this.renderValue(valueArray, isOpen)}
-						{this.renderInput(valueArray, focusedOptionIndex)}
 					</span>
+					{this.renderInput(valueArray, focusedOptionIndex)}
 					{removeMessage}
 					{this.renderLoading()}
 					{this.renderClear()}

@@ -816,6 +816,7 @@ var Select = _react2['default'].createClass({
 		menuRenderer: _react2['default'].PropTypes.func, // renders a custom menu with options
 		menuStyle: _react2['default'].PropTypes.object, // optional style to apply to the menu
 		multi: _react2['default'].PropTypes.bool, // multi-value input
+		multiValueRender: _react2['default'].PropTypes.func, // multiValueRender: function (props...) {}
 		name: _react2['default'].PropTypes.string, // generates a hidden <input /> tag with this field name for html forms
 		noResultsText: stringOrNode, // placeholder displayed when there are no matching search results
 		onBlur: _react2['default'].PropTypes.func, // onBlur handler: function (event) {}
@@ -1558,6 +1559,17 @@ var Select = _react2['default'].createClass({
 		}
 		var onClick = this.props.onValueClick ? this.handleValueClick : null;
 		if (this.props.multi) {
+			if (this.props.multiValueRender) {
+				return this.props.multiValueRender({
+					valueArray: valueArray,
+					onClick: onClick,
+					renderLabel: renderLabel,
+					ValueComponent: ValueComponent,
+					disabled: this.props.disabled,
+					valueKey: this.props.valueKey,
+					onRemove: this.removeValue
+				});
+			}
 			return valueArray.map(function (value, i) {
 				return _react2['default'].createElement(
 					ValueComponent,

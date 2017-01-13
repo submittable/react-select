@@ -78,6 +78,7 @@ const Select = React.createClass({
 		menuRenderer: React.PropTypes.func,         // renders a custom menu with options
 		menuStyle: React.PropTypes.object,          // optional style to apply to the menu
 		multi: React.PropTypes.bool,                // multi-value input
+		multiValueRender: React.PropTypes.func,     // multiValueRender: function (props...) {}
 		name: React.PropTypes.string,               // generates a hidden <input /> tag with this field name for html forms
 		noResultsText: stringOrNode,                // placeholder displayed when there are no matching search results
 		onBlur: React.PropTypes.func,               // onBlur handler: function (event) {}
@@ -784,6 +785,17 @@ const Select = React.createClass({
 		}
 		let onClick = this.props.onValueClick ? this.handleValueClick : null;
 		if (this.props.multi) {
+			if (this.props.multiValueRender) {
+				return this.props.multiValueRender({
+					valueArray,
+					onClick,
+					renderLabel,
+					ValueComponent,
+					disabled: this.props.disabled,
+					valueKey: this.props.valueKey,
+					onRemove: this.removeValue,
+				});
+			}
 			return valueArray.map((value, i) => {
 				return (
 					<ValueComponent

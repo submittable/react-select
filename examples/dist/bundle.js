@@ -392,9 +392,6 @@ var Creatable = (0, _createReactClass2['default'])({
 		// new option click handler: function (option) {}
 		onNewOptionClick: _propTypes2['default'].func,
 
-		// new option click handler: function (option) {}
-		onNewOptionClick: _react2['default'].PropTypes.func,
-
 		// See Select.propTypes.options
 		options: _propTypes2['default'].array,
 

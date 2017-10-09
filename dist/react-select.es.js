@@ -114,7 +114,6 @@ function clearRenderer() {
 	});
 }
 
-var babelHelpers = {};
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
@@ -345,28 +344,6 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-babelHelpers;
-
 var Option = function (_React$Component) {
 	inherits(Option, _React$Component);
 
@@ -472,6 +449,7 @@ var Option = function (_React$Component) {
 					onTouchMove: this.handleTouchMove,
 					onTouchEnd: this.handleTouchEnd,
 					id: instancePrefix + '-option-' + optionIndex,
+					'aria-label': this.props.children,
 					title: option.title },
 				this.props.children
 			);
@@ -663,7 +641,10 @@ var Select$1 = function (_React$Component) {
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
-			if (this.props.autofocus) {
+			if (typeof this.props.autofocus !== 'undefined' && typeof console !== 'undefined') {
+				console.warn('Warning: The autofocus prop will be deprecated in react-select1.0.0 in favor of autoFocus to match React\'s autoFocus prop');
+			}
+			if (this.props.autoFocus || this.props.autofocus) {
 				this.focus();
 			}
 		}
@@ -1377,7 +1358,7 @@ var Select$1 = function (_React$Component) {
 			if (!valueArray.length) {
 				return !this.state.inputValue ? React.createElement(
 					'div',
-					{ className: 'Select-placeholder' },
+					{ className: 'Select-placeholder', tabIndex: -1 },
 					this.props.placeholder
 				) : null;
 			}
@@ -1483,7 +1464,7 @@ var Select$1 = function (_React$Component) {
 			}
 			return React.createElement(
 				'div',
-				{ className: className },
+				{ className: className, key: 'input-wrap' },
 				React.createElement('input', inputProps)
 			);
 		}
@@ -1671,6 +1652,7 @@ var Select$1 = function (_React$Component) {
 			var options = this._visibleOptions = this.filterOptions(this.props.multi ? this.getValueArray(this.props.value) : null);
 			var isOpen = this.state.isOpen;
 			if (this.props.multi && !options.length && valueArray.length && !this.state.inputValue) isOpen = false;
+			isOpen = this.props.isAlwaysOpen ? true : isOpen;
 			var focusedOptionIndex = this.getFocusableOptionIndex(valueArray[0]);
 
 			var focusedOption = null;
@@ -1749,7 +1731,8 @@ Select$1.propTypes = {
 	addLabelText: PropTypes.string, // placeholder displayed when you want to add a label on a multi-value input
 	arrowRenderer: PropTypes.func, // Create drop-down caret element
 	autoBlur: PropTypes.bool, // automatically blur the component when an option is selected
-	autofocus: PropTypes.bool, // autofocus the component on mount
+	autofocus: PropTypes.bool, // deprecated; use autoFocus instead
+	autoFocus: PropTypes.bool, // autofocus the component on mount
 	autosize: PropTypes.bool, // whether to enable autosizing or not
 	backspaceRemoves: PropTypes.bool, // whether backspace removes an item if there is no text input
 	backspaceToRemoveMessage: PropTypes.string, // Message to use for screenreaders to press backspace to remove the current item - {label} is replaced with the item label
@@ -1770,6 +1753,7 @@ Select$1.propTypes = {
 	inputProps: PropTypes.object, // custom attributes for the Input
 	inputRenderer: PropTypes.func, // returns a custom input component
 	instanceId: PropTypes.string, // set the components instanceId
+	isAlwaysOpen: PropTypes.bool, // set the menu to be always open
 	isLoading: PropTypes.bool, // whether the Select is loading externally or not (such as options being loaded)
 	joinValues: PropTypes.bool, // joins multiple values into a single form field with the delimiter (legacy mode)
 	labelKey: PropTypes.string, // path of the label value in option objects
@@ -1858,7 +1842,8 @@ Select$1.defaultProps = {
 	simpleValue: false,
 	tabSelectsValue: true,
 	valueComponent: Value,
-	valueKey: 'value'
+	valueKey: 'value',
+	isAlwaysOpen: false
 };
 
 var propTypes = {
@@ -1950,6 +1935,8 @@ var Async = function (_Component) {
 			var cache = this._cache;
 
 			if (cache && Object.prototype.hasOwnProperty.call(cache, inputValue)) {
+				this._callback = null;
+
 				this.setState({
 					options: cache[inputValue]
 				});
@@ -1958,14 +1945,14 @@ var Async = function (_Component) {
 			}
 
 			var callback = function callback(error, data) {
+				var options = data && data.options || [];
+
+				if (cache) {
+					cache[inputValue] = options;
+				}
+
 				if (callback === _this2._callback) {
 					_this2._callback = null;
-
-					var options = data && data.options || [];
-
-					if (cache) {
-						cache[inputValue] = options;
-					}
 
 					_this2.setState({
 						isLoading: false,
@@ -2122,8 +2109,8 @@ var CreatableSelect = function (_React$Component) {
 					if (onNewOptionClick) {
 						onNewOptionClick(option);
 					} else {
+						this.inputValue = '';
 						options.unshift(option);
-
 						this.select.selectValue(option);
 					}
 				}
@@ -2215,7 +2202,6 @@ var CreatableSelect = function (_React$Component) {
 			if (onInputChange) {
 				onInputChange(input);
 			}
-
 			// This value may be needed in between Select mounts (when this.select is null)
 			this.inputValue = input;
 		}
@@ -2408,16 +2394,6 @@ CreatableSelect.propTypes = {
 	shouldKeyDownEventCreateNewOption: PropTypes.func
 };
 
-function reduce(obj) {
-	var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-	return Object.keys(obj).reduce(function (props, key) {
-		var value = obj[key];
-		if (value !== undefined) props[key] = value;
-		return props;
-	}, props);
-}
-
 var AsyncCreatableSelect = function (_React$Component) {
 	inherits(AsyncCreatableSelect, _React$Component);
 
@@ -2444,7 +2420,7 @@ var AsyncCreatableSelect = function (_React$Component) {
 						CreatableSelect,
 						_this2.props,
 						function (creatableProps) {
-							return React.createElement(Select$1, _extends({}, reduce(asyncProps, reduce(creatableProps, {})), {
+							return React.createElement(Select$1, _extends({}, asyncProps, creatableProps, {
 								onInputChange: function onInputChange(input) {
 									creatableProps.onInputChange(input);
 									return asyncProps.onInputChange(input);

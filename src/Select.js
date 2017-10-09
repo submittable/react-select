@@ -707,7 +707,7 @@ class Select extends React.Component {
 		let renderLabel = this.props.valueRenderer || this.getOptionLabel;
 		let ValueComponent = this.props.valueComponent;
 		if (!valueArray.length) {
-			return !this.state.inputValue ? <div className="Select-placeholder">{this.props.placeholder}</div> : null;
+			return !this.state.inputValue ? <div className="Select-placeholder" tabIndex={-1}>{this.props.placeholder}</div> : null;
 		}
 		let onClick = this.props.onValueClick ? this.handleValueClick : null;
 		if (this.props.multi) {
@@ -1076,6 +1076,7 @@ Select.propTypes = {
 	inputProps: PropTypes.object,         // custom attributes for the Input
 	inputRenderer: PropTypes.func,        // returns a custom input component
 	instanceId: PropTypes.string,         // set the components instanceId
+	isAlwaysOpen: PropTypes.bool,         // set the menu to be always open
 	isLoading: PropTypes.bool,            // whether the Select is loading externally or not (such as options being loaded)
 	joinValues: PropTypes.bool,           // joins multiple values into a single form field with the delimiter (legacy mode)
 	labelKey: PropTypes.string,           // path of the label value in option objects
@@ -1165,6 +1166,7 @@ Select.defaultProps = {
 	tabSelectsValue: true,
 	valueComponent: Value,
 	valueKey: 'value',
+	isAlwaysOpen: false,
 };
 
 export default Select;

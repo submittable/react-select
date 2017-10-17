@@ -1209,6 +1209,9 @@ var Select$1 = function (_React$Component) {
 			if (event && event.type === 'mousedown' && event.button !== 0) {
 				return;
 			}
+			if (event.key !== 'Enter') {
+				return;
+			}
 			event.stopPropagation();
 			event.preventDefault();
 			this.setValue(this.getResetValue());
@@ -1488,6 +1491,7 @@ var Select$1 = function (_React$Component) {
 					onTouchStart: this.handleTouchStart,
 					onTouchMove: this.handleTouchMove,
 					onTouchEnd: this.handleTouchEndClearValue,
+					onKeyPress: this.clearValue,
 					role: 'button',
 					tabIndex: 0
 				},

@@ -826,6 +826,8 @@ class Select extends React.Component {
 				onTouchStart={this.handleTouchStart}
 				onTouchMove={this.handleTouchMove}
 				onTouchEnd={this.handleTouchEndClearValue}
+				role="button"
+				tabIndex={0}
 			>
 				{clear}
 			</span>

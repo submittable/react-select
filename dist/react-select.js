@@ -1487,7 +1487,9 @@ var Select$1 = function (_React$Component) {
 					onMouseDown: this.clearValue,
 					onTouchStart: this.handleTouchStart,
 					onTouchMove: this.handleTouchMove,
-					onTouchEnd: this.handleTouchEndClearValue
+					onTouchEnd: this.handleTouchEndClearValue,
+					role: 'button',
+					tabIndex: 0
 				},
 				clear
 			);

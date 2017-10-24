@@ -572,8 +572,14 @@ class Select extends React.Component {
 		if (event && event.type === 'mousedown' && event.button !== 0) {
 			return;
 		}
-		if (event.key !== 'Enter') {
-			return;
+		if (event && event.key === 'Enter') {
+			event.stopPropagation();
+			event.preventDefault();
+			this.setValue(this.getResetValue());
+			this.setState({
+				isOpen: false,
+				inputValue: this.handleInputValueChange(''),
+			}, this.focus);
 		}
 		event.stopPropagation();
 		event.preventDefault();

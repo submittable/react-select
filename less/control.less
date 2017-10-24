@@ -121,6 +121,7 @@
 	overflow: hidden;
 	position: relative;
 	width: 100%;
+	table-layout: fixed;
 
 	&:hover {
 		box-shadow: @select-input-hover-box-shadow;
@@ -159,7 +160,8 @@
 	padding-left: @select-padding-horizontal;
 	padding-right: @select-padding-horizontal;
 	vertical-align: middle;
-
+	overflow: hidden;
+	max-width: calc(100% - 1px);
 	> input {
 		width: 100%;
 		background: none transparent;

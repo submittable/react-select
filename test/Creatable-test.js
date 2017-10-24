@@ -15,8 +15,8 @@ var expect = unexpected
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Select = require('../src/Select');
+var TestUtils = require('react-dom/test-utils');
+var Select = require('../src');
 
 describe('Creatable', () => {
 	let creatableInstance, creatableNode, filterInputNode, innerSelectInstance, renderer;

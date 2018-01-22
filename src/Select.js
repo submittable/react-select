@@ -7,7 +7,6 @@ import AutosizeInput from 'react-input-autosize';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { findDOMNode } from 'react-dom';
 
 import defaultArrowRenderer from './utils/defaultArrowRenderer';
 import defaultClearRenderer from './utils/defaultClearRenderer';
@@ -149,16 +148,13 @@ class Select extends React.Component {
 	componentDidUpdate (prevProps, prevState) {
 		// focus to the selected option
 		if (this.menu && this.focused && this.state.isOpen && !this.hasScrolledToOption) {
-			const focusedOptionNode = findDOMNode(this.focused);
-			let menuNode = findDOMNode(this.menu);
-
-			const scrollTop = menuNode.scrollTop;
-			const scrollBottom = scrollTop + menuNode.offsetHeight;
-			const optionTop = focusedOptionNode.offsetTop;
-			const optionBottom = optionTop + focusedOptionNode.offsetHeight;
+			const scrollTop = this.menu.scrollTop;
+			const scrollBottom = scrollTop + this.menu.offsetHeight;
+			const optionTop = this.focused.offsetTop;
+			const optionBottom = optionTop + this.focused.offsetHeight;
 
 			if (scrollTop > optionTop || scrollBottom < optionBottom) {
-				menuNode.scrollTop = focusedOptionNode.offsetTop;
+				this.menu.scrollTop = this.focused.offsetTop;
 			}
 
 			// We still set hasScrolledToOption to true even if we didn't
@@ -169,19 +165,17 @@ class Select extends React.Component {
 			this.hasScrolledToOption = false;
 		}
 
-		if (this._scrollToFocusedOptionOnUpdate && this.focused && this.menu) {
+		if (this._scrollToFocusedOptionOnUpdate && this.focused && this.menu && this.focused.getBoundingClientRect && this.menu.getBoundingClientRect) {
 			this._scrollToFocusedOptionOnUpdate = false;
-			const focusedDOM = findDOMNode(this.focused);
-			let menuDOM = findDOMNode(this.menu);
-			const focusedRect = focusedDOM.getBoundingClientRect();
-			const menuRect = menuDOM.getBoundingClientRect();
+			const focusedRect = this.focused.getBoundingClientRect();
+			const menuRect = this.menu.getBoundingClientRect();
 			if (focusedRect.bottom > menuRect.bottom) {
-				menuDOM.scrollTop = (focusedDOM.offsetTop + focusedDOM.clientHeight - menuDOM.offsetHeight);
+				this.menu.scrollTop = (this.focused.offsetTop + this.focused.clientHeight - this.menu.offsetHeight);
 			} else if (focusedRect.top < menuRect.top) {
-				menuDOM.scrollTop = focusedDOM.offsetTop;
+				this.menu.scrollTop = this.focused.offsetTop;
 			}
 		}
-		if (this.props.scrollMenuIntoView && this.menuContainer) {
+		if (this.props.scrollMenuIntoView && this.menuContainer && this.menuContainer.getBoundingClientRect) {
 			const menuContainerRect = this.menuContainer.getBoundingClientRect();
 			if (window.innerHeight < menuContainerRect.bottom + this.props.menuBuffer) {
 				window.scrollBy(0, menuContainerRect.bottom + this.props.menuBuffer - window.innerHeight);

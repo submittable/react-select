@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 class Value extends React.Component {
 
@@ -43,12 +43,12 @@ class Value extends React.Component {
 		this.onRemove(event);
 	}
 
-	handleTouchMove (event) {
+	handleTouchMove () {
 		// Set a flag that the view is being dragged
 		this.dragging = true;
 	}
 
-	handleTouchStart (event) {
+	handleTouchStart () {
 		// Set a flag that the view is not being dragged
 		this.dragging = false;
 	}
@@ -82,7 +82,7 @@ class Value extends React.Component {
 
 	render () {
 		return (
-			<div className={classNames('Select-value', this.props.value.className)}
+			<div className={classNames('Select-value', this.props.value.disabled ? 'Select-value-disabled' : '', this.props.value.className)}
 				style={this.props.value.style}
 				title={this.props.value.title}
 				>
@@ -91,8 +91,7 @@ class Value extends React.Component {
 			</div>
 		);
 	}
-};
-
+}
 
 Value.propTypes = {
 	children: PropTypes.node,

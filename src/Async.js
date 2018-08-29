@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Select from './Select';
+
 import stripDiacritics from './utils/stripDiacritics';
+
 const propTypes = {
 	autoload: PropTypes.bool.isRequired,       // automatically call the `loadOptions` prop on-mount; defaults to true
 	cache: PropTypes.any,                      // object to use to cache results; set to null/false to disable caching
@@ -33,6 +35,8 @@ const propTypes = {
 };
 
 const defaultCache = {};
+
+const defaultChildren = props => <Select {...props} />;
 
 const defaultProps = {
 	autoload: true,
@@ -91,6 +95,7 @@ export default class Async extends Component {
 			this._callback = null;
 
 			this.setState({
+				isLoading: false,
 				options: cache[inputValue]
 			});
 
@@ -137,7 +142,17 @@ export default class Async extends Component {
 
 	onInputChange (inputValue) {
 		const { ignoreAccents, ignoreCase, onInputChange } = this.props;
-		let transformedInputValue = inputValue;
+		let newInputValue = inputValue;
+
+		if (onInputChange) {
+			const value = onInputChange(newInputValue);
+			// Note: != used deliberately here to catch undefined and null
+			if (value != null && typeof value !== 'object') {
+				newInputValue = '' + value;
+			}
+		}
+
+		let transformedInputValue = newInputValue;
 
 		if (ignoreAccents) {
 			transformedInputValue = stripDiacritics(transformedInputValue);
@@ -147,15 +162,11 @@ export default class Async extends Component {
 			transformedInputValue = transformedInputValue.toLowerCase();
 		}
 
-		if (onInputChange) {
-			onInputChange(transformedInputValue);
-		}
-
-		this.setState({ inputValue });
+		this.setState({ inputValue: newInputValue });
 		this.loadOptions(transformedInputValue);
 
-		// Return the original input value to avoid modifying the user's view of the input while typing.
-		return inputValue;
+		// Return new input value, but without applying toLowerCase() to avoid modifying the user's view case of the input while typing.
+		return newInputValue;
 	}
 
 	noResultsText() {
@@ -176,7 +187,7 @@ export default class Async extends Component {
 	}
 
 	render () {
-		const { children, loadingPlaceholder, multi, onChange, placeholder, value } = this.props;
+		const { children, loadingPlaceholder, placeholder } = this.props;
 		const { isLoading, options } = this.state;
 
 		const props = {
@@ -197,9 +208,3 @@ export default class Async extends Component {
 
 Async.propTypes = propTypes;
 Async.defaultProps = defaultProps;
-
-function defaultChildren (props) {
-	return (
-		<Select {...props} />
-	);
-}

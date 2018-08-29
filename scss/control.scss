@@ -8,6 +8,18 @@
 .Select {
 	position: relative;
 
+	// disable some browser-specific behaviours that break the input
+	input::-webkit-contacts-auto-fill-button,
+	input::-webkit-credentials-auto-fill-button {
+		display: none !important;
+	}
+	input::-ms-clear {
+		display: none !important;
+	}
+	input::-ms-reveal {
+		display: none !important;
+	}
+
 	// preferred box model
 	&,
 	& div,
@@ -54,6 +66,10 @@
 		}
 	}
 
+	&.is-focused > .Select-control {
+		background: $select-input-bg-focus;
+	}
+
 	&.is-focused:not(.is-open) > .Select-control {
 		border-color: $select-input-border-focus lighten($select-input-border-focus, 5%) lighten($select-input-border-focus, 5%);
 		box-shadow: $select-input-box-shadow-focus;
@@ -79,6 +95,10 @@
 				outline: none;
 				text-decoration: underline;
 			}
+
+			&:focus {
+				background: $select-input-bg-focus;
+			}
 		}
 	}
 
@@ -90,6 +110,10 @@
 	&.is-open .Select-arrow,
 	.Select-arrow-zone:hover > .Select-arrow {
 		border-top-color: $select-arrow-color-hover;
+	}
+	&.Select--rtl {
+		direction: rtl;
+		text-align: right;
 	}
 }
 
@@ -118,6 +142,7 @@
 
 	.Select-input:focus {
 		outline: none;
+		background: $select-input-bg-focus;
 	}
 }
 
@@ -154,6 +179,7 @@
 	max-width: calc(100% - 1px);
 
 	> input {
+		width: 100%;
 		background: none transparent;
 		border: 0 none;
 		box-shadow: none;
@@ -165,7 +191,7 @@
 		margin: 0;
 		outline: none;
 		// padding: 0;
-		line-height: 14px;  /* For IE 8 compatibility */
+		line-height: 17px;  /* For IE 8 compatibility */
 		padding: (($select-input-internal-height - 14) / 2 - 2) 0 (($select-input-internal-height - 14) / 2 + 2);  /* For IE 8 compatibility */
 		-webkit-appearance: none;
 
@@ -225,6 +251,7 @@
   display: inline-block;
 }
 .Select .Select-aria-only {
+	position: absolute;
 	display: inline-block;
 	height: 1px;
 	width: 1px;
@@ -245,6 +272,11 @@
 	vertical-align: middle;
 	width: ($select-arrow-width * 5);
 	padding-right: $select-arrow-width;
+
+	.Select--rtl & {
+		padding-right: 0;
+		padding-left: $select-arrow-width;
+	}
 }
 
 .Select-arrow {

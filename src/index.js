@@ -1,18 +1,16 @@
-import Select from './Select';
-import Async from './Async';
-import AsyncCreatable from './AsyncCreatable';
-import Creatable from './Creatable';
-import Value from './Value';
+// @flow
 
-Select.Async = Async;
-Select.AsyncCreatable = AsyncCreatable;
-Select.Creatable = Creatable;
-Select.Value = Value;
+import SelectBase from './Select';
+import manageState from './stateManager';
 
-export default Select;
-export {
-	Async,
-	AsyncCreatable,
-	Creatable,
-	Value
-};
+export default manageState(SelectBase);
+
+export { SelectBase };
+export { default as Async } from './Async';
+export { default as AsyncCreatable } from './AsyncCreatable';
+export { default as Creatable } from './Creatable';
+export { createFilter } from './filters';
+export { default as makeAnimated } from './animated/index';
+export { components } from './components/index';
+export { mergeStyles } from './styles';
+export { defaultTheme } from './theme';

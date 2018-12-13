@@ -7,11 +7,6 @@ import Gravatar from 'react-gravatar';
 const USERS = require('../data/users');
 const GRAVATAR_SIZE = 15;
 
-const stringOrNode = PropTypes.oneOfType([
-	PropTypes.string,
-	PropTypes.node,
-]);
-
 const GravatarOption = createClass({
 	propTypes: {
 		children: PropTypes.node,
@@ -60,7 +55,7 @@ const GravatarOption = createClass({
 const GravatarValue = createClass({
 	propTypes: {
 		children: PropTypes.node,
-		placeholder: stringOrNode,
+		placeholder: PropTypes.string,
 		value: PropTypes.object
 	},
 	render () {
@@ -99,7 +94,7 @@ const UsersField = createClass({
 
 		return (
 			<div className="section">
-				<h3 className="section-heading">{this.props.label} <a href="https://github.com/JedWatson/react-select/tree/v1.x/examples/src/components/CustomComponents.js">(Source)</a></h3>
+				<h3 className="section-heading">{this.props.label}</h3>
 				<Select
 					arrowRenderer={arrowRenderer}
 					onChange={this.setValue}

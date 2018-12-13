@@ -1,5 +1,4 @@
 'use strict';
-/* global describe, it, beforeEach */
 /* eslint react/jsx-boolean-value: 0 */
 
 // Emulating the DOM here, only so that if this test file gets
@@ -146,7 +145,7 @@ describe('Async', () => {
 			typeSearchText('te');
 			return expect(asyncNode.textContent, 'to contain', 'Loading');
 		});
-
+		
 		it('caches the result of all option fetches', (cb) => {
 			const res = {
 				t: createOptionsResponse(['t']),
@@ -476,15 +475,6 @@ describe('Async', () => {
 			typeSearchText('a');
 			return expect(onInputChange, 'was called times', 1);
 		});
-
-		it('should change the value when onInputChange returns a value', () => {
-			const onInputChange = sinon.stub().returns('2');
-			const instance = createControl({
-				onInputChange,
-			});
-			typeSearchText('1');
-			return expect(filterInputNode.value, 'to equal', '2');
-		});
 	});
 
 	describe('.focus()', () => {
@@ -503,7 +493,8 @@ describe('Async', () => {
 
 	describe('props sync test', () => {
 		it('should update options on componentWillReceiveProps', () => {
-			createControl({});
+			createControl({
+			});
 			asyncInstance.componentWillReceiveProps({
 				options: [{
 					label: 'bar',
@@ -512,28 +503,6 @@ describe('Async', () => {
 			});
 			expect(asyncNode.querySelectorAll('[role=option]').length, 'to equal', 1);
 			expect(asyncNode.querySelector('[role=option]').textContent, 'to equal', 'bar');
-		});
-
-		it('should not update options on componentWillReceiveProps', () => {
-			const props = { options: [] };
-			createControl(props);
-
-			const setStateStub = sinon.stub(asyncInstance, 'setState');
-			asyncInstance.componentWillReceiveProps(props);
-
-			expect(setStateStub, 'was not called');
-
-			setStateStub.restore();
-		});
-	});
-
-	describe('componentWillUnmount', () => {
-		it('should set _callback to null', () => {
-			createControl({});
-			expect(asyncInstance._callback, 'not to equal', null);
-
-			asyncInstance.componentWillUnmount();
-			expect(asyncInstance._callback, 'to equal', null);
 		});
 	});
 });

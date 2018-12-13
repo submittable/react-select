@@ -1,7 +1,6 @@
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React from 'react';
-import blockEvent from './utils/blockEvent';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 class Option extends React.Component {
 
@@ -15,6 +14,20 @@ class Option extends React.Component {
 		this.handleTouchEnd = this.handleTouchEnd.bind(this);
 		this.handleTouchMove = this.handleTouchMove.bind(this);
 		this.onFocus = this.onFocus.bind(this);
+	}
+
+
+	blockEvent (event) {
+		event.preventDefault();
+		event.stopPropagation();
+		if ((event.target.tagName !== 'A') || !('href' in event.target)) {
+			return;
+		}
+		if (event.target.target) {
+			window.open(event.target.href, event.target.target);
+		} else {
+			window.location.href = event.target.href;
+		}
 	}
 
 	handleMouseDown (event) {
@@ -39,12 +52,12 @@ class Option extends React.Component {
 		this.handleMouseDown(event);
 	}
 
-	handleTouchMove () {
+	handleTouchMove (event) {
 		// Set a flag that the view is being dragged
 		this.dragging = true;
 	}
 
-	handleTouchStart () {
+	handleTouchStart (event) {
 		// Set a flag that the view is not being dragged
 		this.dragging = false;
 	}
@@ -56,33 +69,33 @@ class Option extends React.Component {
 	}
 
 	render () {
-		const { option, instancePrefix, optionIndex } = this.props;
-		const className = classNames(this.props.className, option.className);
+		var { option, instancePrefix, optionIndex } = this.props;
+		var className = classNames(this.props.className, option.className);
 
 		return option.disabled ? (
 			<div className={className}
-				onMouseDown={blockEvent}
-				onClick={blockEvent}>
+				onMouseDown={this.blockEvent}
+				onClick={this.blockEvent}>
 				{this.props.children}
 			</div>
 		) : (
 			<div className={className}
 				style={option.style}
 				role="option"
-				aria-label={option.label}
 				onMouseDown={this.handleMouseDown}
 				onMouseEnter={this.handleMouseEnter}
 				onMouseMove={this.handleMouseMove}
 				onTouchStart={this.handleTouchStart}
 				onTouchMove={this.handleTouchMove}
 				onTouchEnd={this.handleTouchEnd}
-				id={`${instancePrefix}-option-${optionIndex}`}
+				id={instancePrefix + '-option-' + optionIndex}
+				aria-label={this.props.children}
 				title={option.title}>
 				{this.props.children}
 			</div>
 		);
 	}
-}
+};
 
 Option.propTypes = {
 	children: PropTypes.node,

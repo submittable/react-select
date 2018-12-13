@@ -19,7 +19,9 @@ var TestUtils = require('react-dom/test-utils');
 var Select = require('../src');
 
 describe('Creatable', () => {
-	let creatableInstance, creatableNode, filterInputNode, innerSelectInstance;
+	let creatableInstance, creatableNode, filterInputNode, innerSelectInstance, renderer;
+
+	beforeEach(() => renderer = TestUtils.createRenderer());
 
 	const defaultOptions = [
 		{ value: 'one', label: 'One' },
@@ -64,17 +66,6 @@ describe('Creatable', () => {
 		createControl();
 		typeSearchText('foo');
 		expect(creatableNode.querySelector('.Select-create-option-placeholder'), 'to have text', Select.Creatable.promptTextCreator('foo'));
-	});
-
-	it('should add a placeholder "create..." prompt as last option when showNewOptionAtTop is false', () => {
-		createControl({
-			showNewOptionAtTop: false
-		});
-		const searchTerm = 'Th';
-		typeSearchText(searchTerm);
-		let nodes = creatableNode.querySelectorAll('.Select-option');
-		expect(nodes, 'to have length', 2); // [Three, Create "th"?]
-		expect(nodes[nodes.length-1], 'to have text', Select.Creatable.promptTextCreator(searchTerm));
 	});
 
 	it('should not show a "create..." prompt if current filter text is an exact match for an existing option', () => {
@@ -231,46 +222,6 @@ describe('Creatable', () => {
 		expect(test(newOption('Foo', 11)), 'to be', true);
 	});
 
-	it('default: isOptionUnique function should always return true if given options are empty', () => {
-		const options = [];
-
-		function newOption (label, value) {
-			return { label, value };
-		};
-
-		function test (option) {
-			return Select.Creatable.isOptionUnique({
-				option,
-				options,
-				labelKey: 'label',
-				valueKey: 'value'
-			});
-		};
-
-		expect(test(newOption('foo', 0)), 'to be', true);
-		expect(test(newOption('qux', 1)), 'to be', true);
-	});
-
-	it('default: isOptionUnique function should not crash if given options are null or undefined', () => {
-		const options = null;
-
-		function newOption (label, value) {
-			return { label, value };
-		};
-
-		function test (option) {
-			return Select.Creatable.isOptionUnique({
-				option,
-				options,
-				labelKey: 'label',
-				valueKey: 'value'
-			});
-		};
-
-		expect(test(newOption('foo', 0)), 'to be', true);
-		expect(test(newOption('qux', 1)), 'to be', true);
-	});
-
 	it('default :isValidNewOption function should just ensure a non-empty string is provided', () => {
 		function test (label) {
 			return Select.Creatable.isValidNewOption({ label });
@@ -306,22 +257,6 @@ describe('Creatable', () => {
 	it('default :onInputKeyDown should run user provided handler.', (done) => {
 		createControl({ onInputKeyDown: event => done() });
 		return creatableInstance.onInputKeyDown({ keyCode: 97 });
-	});
-
-	it('default :onInputChange should run user provided handler.', (done) => {
-		createControl({ onInputChange: value => done() });
-		return creatableInstance.onInputChange('a');
-	});
-
-	it(':onInputChange should return the changed input value', () => {
-		createControl({ onInputChange: value => 'a' });
-
-		function test (value) {
-			return creatableInstance.onInputChange(value);
-		}
-
-		expect(test('a'), 'to be', 'a');
-		expect(test('b'), 'to be', 'a');
 	});
 
 	describe('.focus()', () => {
